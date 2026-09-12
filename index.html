@@ -1,1 +1,4425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b16">
+  <meta name="description" content="Click Play - Plataforma de jogos online">
+  <title>Click Play</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070a12;
+      --bg2: #0d1120;
+      --card: #111729;
+      --card2: #151c30;
+      --border: rgba(255,255,255,.08);
+      --text: #f7f8ff;
+      --muted: #8d96ad;
+      --primary: #6c5ce7;
+      --primary2: #8b7cf6;
+      --success: #21c98b;
+      --danger: #ff5571;
+      --warning: #ffc857;
+      --blue: #3ea6ff;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(108,92,231,.18), transparent 30%),
+        radial-gradient(circle at 100% 20%, rgba(62,166,255,.12), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      width: 250px;
+      background: rgba(8,11,22,.92);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 14px;
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      padding: 8px 12px 25px;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -.7px;
+    }
+
+    .logo span {
+      color: var(--primary2);
+    }
+
+    .nav-title {
+      color: #626b82;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 12px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav button {
+      color: var(--muted);
+      background: transparent;
+      border-radius: 12px;
+      padding: 12px 13px;
+      text-align: left;
+      transition: .2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: rgba(108,92,231,.16);
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      background: rgba(7,10,18,.72);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .search {
+      width: min(420px, 45vw);
+      position: relative;
+    }
+
+    .search input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: white;
+      padding: 11px 14px 11px 42px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      opacity: .55;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: linear-gradient(135deg,var(--primary),#25c5ff);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .content {
+      padding: 30px;
+      max-width: 1600px;
+      margin: auto;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .card {
+      background: linear-gradient(145deg, rgba(17,23,41,.98), rgba(13,17,32,.98));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 38px;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(108,92,231,.4), transparent 30%),
+        linear-gradient(135deg,#15182c,#11172b 60%,#0d1220);
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1;
+      max-width: 700px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg,var(--primary),var(--primary2));
+    }
+
+    .btn-secondary {
+      color: white;
+      background: var(--card2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      color: white;
+      background: var(--danger);
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .section-header h2 {
+      font-size: 21px;
+    }
+
+    .section-header span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(230px,1fr));
+      gap: 16px;
+    }
+
+    .game-card {
+      overflow: hidden;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139,124,246,.4);
+    }
+
+    .game-cover {
+      height: 145px;
+      display: grid;
+      place-items: center;
+      font-size: 55px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 30%),
+        linear-gradient(135deg,#202849,#12172b);
+    }
+
+    .game-info {
+      padding: 16px;
+    }
+
+    .game-info h3 {
+      margin-bottom: 5px;
+    }
+
+    .game-info p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 11px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 5px 8px;
+      border-radius: 20px;
+      background: rgba(108,92,231,.12);
+      color: #bcb4ff;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 20px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rank-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .small-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* =========================
+       FORMS
+    ========================= */
+
+    .form-card {
+      max-width: 650px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: #c9cee0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 11px;
+      background: #0a0e1b;
+      color: white;
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: var(--primary);
+    }
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    .auth-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(108,92,231,.25), transparent 35%),
+        var(--bg);
+    }
+
+    .auth-box {
+      width: min(440px,100%);
+      padding: 30px;
+    }
+
+    .auth-logo {
+      text-align: center;
+      font-size: 35px;
+      font-weight: 950;
+      margin-bottom: 8px;
+    }
+
+    .auth-logo span {
+      color: var(--primary2);
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 25px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 22px;
+      background: #0a0e1a;
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .auth-tabs button {
+      padding: 10px;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 9px;
+    }
+
+    .auth-tabs button.active {
+      background: var(--card2);
+      color: white;
+    }
+
+    .error {
+      color: #ff758b;
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    .success {
+      color: #3de0a0;
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    /* =========================
+       PROFILE
+    ========================= */
+
+    .profile-cover {
+      height: 210px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(139,124,246,.4), transparent 25%),
+        linear-gradient(135deg,#171c36,#0c1120);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-banner-upload {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+    }
+
+    .profile-main {
+      padding: 0 25px 25px;
+      position: relative;
+    }
+
+    .profile-big-avatar {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      border: 5px solid var(--bg2);
+      object-fit: cover;
+      margin-top: -50px;
+      background: linear-gradient(135deg,var(--primary),#1ec8ff);
+    }
+
+    .profile-name {
+      font-size: 26px;
+      font-weight: 900;
+      margin-top: 8px;
+    }
+
+    .profile-email {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .xp-bar {
+      height: 8px;
+      background: #080c17;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .xp-fill {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg,var(--primary),#39c9ff);
+      border-radius: inherit;
+    }
+
+    /* =========================
+       MILLION GAME
+    ========================= */
+
+    .million {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .million-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 30px;
+      font-size: 13px;
+    }
+
+    .question-card {
+      padding: 25px;
+      text-align: center;
+    }
+
+    .question-number {
+      color: var(--primary2);
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .question-text {
+      font-size: clamp(21px,3vw,31px);
+      font-weight: 850;
+      line-height: 1.3;
+      margin-bottom: 25px;
+    }
+
+    .timer {
+      height: 7px;
+      background: #080b14;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--success);
+      transition: width 1s linear;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .answer {
+      padding: 17px;
+      border-radius: 13px;
+      background: #0d1323;
+      color: white;
+      border: 1px solid var(--border);
+      text-align: left;
+      transition: .15s;
+    }
+
+    .answer:hover {
+      border-color: var(--primary);
+      background: #141a30;
+    }
+
+    .answer.correct {
+      background: rgba(33,201,139,.18);
+      border-color: var(--success);
+    }
+
+    .answer.wrong {
+      background: rgba(255,85,113,.18);
+      border-color: var(--danger);
+    }
+
+    .answer.disabled {
+      opacity: .3;
+      pointer-events: none;
+    }
+
+    .helps {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 17px;
+    }
+
+    .help {
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: var(--card2);
+      color: white;
+      border: 1px solid var(--border);
+    }
+
+    /* =========================
+       SKY DASH
+    ========================= */
+
+    .sky-wrap {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .sky-board {
+      height: 470px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 70% 20%, rgba(255,255,255,.2), transparent 2%),
+        radial-gradient(circle at 20% 35%, rgba(255,255,255,.2), transparent 2%),
+        linear-gradient(#101b3b,#162f55 55%,#102437);
+      border: 1px solid var(--border);
+    }
+
+    .bird {
+      position: absolute;
+      width: 34px;
+      height: 28px;
+      border-radius: 50% 55% 50% 40%;
+      background: #ffc857;
+      left: 110px;
+      top: 200px;
+      z-index: 5;
+    }
+
+    .bird:after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #111;
+      border-radius: 50%;
+      right: 6px;
+      top: 5px;
+    }
+
+    .pipe {
+      position: absolute;
+      width: 65px;
+      background: #27c37b;
+      border: 3px solid rgba(0,0,0,.18);
+      z-index: 4;
+    }
+
+    .sky-score {
+      position: absolute;
+      top: 18px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 40px;
+      font-weight: 950;
+      z-index: 10;
+      text-shadow: 0 4px 15px #000;
+    }
+
+    .sky-message {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 20;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .sky-message div {
+      background: rgba(5,8,16,.78);
+      padding: 25px;
+      border-radius: 18px;
+      pointer-events: auto;
+    }
+
+    /* =========================
+       NOTIFICATIONS
+    ========================= */
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      width: min(360px, calc(100vw - 36px));
+      background: #12182a;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 15px;
+      border-radius: 13px;
+      animation: slide .25s ease;
+    }
+
+    @keyframes slide {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    .mobile-menu {
+      display: none;
+    }
+
+    @media(max-width:900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .mobile-menu {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .search {
+        width: 45%;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(max-width:600px) {
+      .topbar {
+        gap: 8px;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .top-actions .user-mini span {
+        display: none;
+      }
+
+      .hero {
+        padding: 25px;
+      }
+
+      .answers {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .sky-board {
+        height: 430px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       AUTH
+  ========================= -->
+
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-box card">
+
+      <div class="auth-logo">
+        Click <span>Play</span>
+      </div>
+
+      <div class="auth-subtitle">
+        Sua plataforma de jogos online
+      </div>
+
+      <div class="auth-tabs">
+        <button id="loginTab" class="active">Entrar</button>
+        <button id="registerTab">Criar conta</button>
+      </div>
+
+      <form id="authForm">
+
+        <div id="nameGroup" class="form-group hidden">
+          <label>Nome de usuário</label>
+          <input id="authName" class="input" type="text" maxlength="30" placeholder="Seu nome">
+        </div>
+
+        <div class="form-group">
+          <label>E-mail</label>
+          <input id="authEmail" class="input" type="email" required placeholder="seu@email.com">
+        </div>
+
+        <div class="form-group">
+          <label>Senha</label>
+          <input id="authPassword" class="input" type="password" minlength="6" required placeholder="••••••••">
+        </div>
+
+        <div id="authMessage"></div>
+
+        <button id="authSubmit" class="btn btn-primary" style="width:100%;">
+          Entrar
+        </button>
+
+      </form>
+    </div>
+  </section>
+
+
+  <!-- =========================
+       APP
+  ========================= -->
+
+  <div id="app" class="app hidden">
+
+    <aside id="sidebar" class="sidebar">
+
+      <div class="logo">
+        Click <span>Play</span>
+      </div>
+
+      <div class="nav-title">Principal</div>
+
+      <nav class="nav">
+
+        <button data-page="home" class="active">
+          <span class="nav-icon">⌂</span>
+          Início
+        </button>
+
+        <button data-page="games">
+          <span class="nav-icon">🎮</span>
+          Jogos
+        </button>
+
+        <button data-page="ranking">
+          <span class="nav-icon">🏆</span>
+          Ranking
+        </button>
+
+        <button data-page="missions">
+          <span class="nav-icon">🎯</span>
+          Missões
+        </button>
+
+        <button data-page="achievements">
+          <span class="nav-icon">🏅</span>
+          Conquistas
+        </button>
+
+      </nav>
+
+      <div class="nav-title">Social</div>
+
+      <nav class="nav">
+
+        <button data-page="friends">
+          <span class="nav-icon">👥</span>
+          Amigos
+        </button>
+
+        <button data-page="chat">
+          <span class="nav-icon">💬</span>
+          Chat
+        </button>
+
+        <button data-page="notifications">
+          <span class="nav-icon">🔔</span>
+          Notificações
+        </button>
+
+      </nav>
+
+      <div class="nav-title">Conta</div>
+
+      <nav class="nav">
+
+        <button data-page="profile">
+          <span class="nav-icon">👤</span>
+          Perfil
+        </button>
+
+        <button data-page="history">
+          <span class="nav-icon">📊</span>
+          Histórico
+        </button>
+
+        <button data-page="settings">
+          <span class="nav-icon">⚙️</span>
+          Configurações
+        </button>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button id="logoutBtn" class="btn btn-secondary" style="width:100%;">
+          Sair
+        </button>
+      </div>
+
+    </aside>
+
+
+    <main class="main">
+
+      <header class="topbar">
+
+        <button id="mobileMenu" class="icon-button mobile-menu">
+          ☰
+        </button>
+
+        <div class="search">
+          <span class="search-icon">⌕</span>
+          <input id="globalSearch" placeholder="Buscar jogos, jogadores...">
+        </div>
+
+        <div class="top-actions">
+
+          <button class="icon-button" onclick="navigate('notifications')">
+            🔔
+          </button>
+
+          <div class="user-mini" onclick="navigate('profile')">
+            <img id="topAvatar" class="avatar" alt="Avatar">
+            <span id="topName">Jogador</span>
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <div id="content" class="content"></div>
+
+    </main>
+
+  </div>
+
+
+  <div id="toastContainer" class="toast-container"></div>
+
+
+  <!-- =========================
+       FIREBASE
+  ========================= -->
+
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc,
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      orderBy,
+      limit,
+      onSnapshot,
+      serverTimestamp,
+      increment
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
+
+    /* ==========================================================
+       FIREBASE CONFIG DO CLICK PLAY
+    ========================================================== */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHd14_x0pDB5nkWFrDKJ0o9X2dyQVpJEU",
+      authDomain: "click-play-16060.firebaseapp.com",
+      projectId: "click-play-16060",
+      storageBucket: "click-play-16060.firebasestorage.app",
+      messagingSenderId: "642019144495",
+      appId: "1:642019144495:web:e520ac14be6b9b0f23e7da",
+      measurementId: "G-49HT4G1GTY"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+
+    /* ==========================================================
+       ESTADO
+    ========================================================== */
+
+    let currentUser = null;
+    let currentProfile = null;
+    let currentPage = "home";
+
+    let loginMode = true;
+
+    let millionGame = {
+      active: false,
+      questionIndex: 0,
+      score: 0,
+      lives: 3,
+      timer: 20,
+      timerInterval: null,
+      questions: [],
+      usedQuestions: [],
+      helps: {
+        fifty: true,
+        skip: true,
+        secondChance: true
+      },
+      answered: false
+    };
+
+    let skyGame = {
+      active: false,
+      score: 0,
+      best: 0,
+      birdY: 200,
+      velocity: 0,
+      gravity: .38,
+      jump: -7,
+      pipes: [],
+      frame: null,
+      started: false,
+      gameOver: false
+    };
+
+
+    /* ==========================================================
+       UTILIDADES
+    ========================================================== */
+
+    window.navigate = function(page) {
+
+      currentPage = page;
+
+      document.querySelectorAll(".nav button").forEach(button => {
+        button.classList.toggle(
+          "active",
+          button.dataset.page === page
+        );
+      });
+
+      renderPage(page);
+
+      document.getElementById("sidebar")?.classList.remove("open");
+    };
+
+
+    function toast(message) {
+
+      const container = document.getElementById("toastContainer");
+
+      const item = document.createElement("div");
+
+      item.className = "toast";
+
+      item.innerHTML = `
+        <strong>Click Play</strong>
+        <div style="color:#aeb6ca;margin-top:5px;font-size:13px;">
+          ${escapeHtml(message)}
+        </div>
+      `;
+
+      container.appendChild(item);
+
+      setTimeout(() => item.remove(), 3500);
+    }
+
+
+    function escapeHtml(value) {
+
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+
+    function avatarFallback(name) {
+
+      const letter = (name || "J").charAt(0).toUpperCase();
+
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+          <rect width="100%" height="100%" rx="100" fill="#6c5ce7"/>
+          <text x="50%" y="55%" dominant-baseline="middle"
+                text-anchor="middle"
+                font-size="90"
+                fill="white"
+                font-family="Arial">${letter}</text>
+        </svg>
+      `)}`;
+    }
+
+
+    function formatDate(timestamp) {
+
+      if (!timestamp) return "Agora";
+
+      try {
+
+        const date = timestamp.toDate
+          ? timestamp.toDate()
+          : new Date(timestamp);
+
+        return date.toLocaleDateString("pt-BR");
+
+      } catch {
+
+        return "Agora";
+      }
+    }
+
+
+    /* ==========================================================
+       AUTENTICAÇÃO
+    ========================================================== */
+
+    const authForm = document.getElementById("authForm");
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const nameGroup = document.getElementById("nameGroup");
+    const authName = document.getElementById("authName");
+    const authEmail = document.getElementById("authEmail");
+    const authPassword = document.getElementById("authPassword");
+    const authSubmit = document.getElementById("authSubmit");
+    const authMessage = document.getElementById("authMessage");
+
+
+    loginTab.onclick = () => {
+
+      loginMode = true;
+
+      loginTab.classList.add("active");
+      registerTab.classList.remove("active");
+
+      nameGroup.classList.add("hidden");
+
+      authName.required = false;
+
+      authSubmit.textContent = "Entrar";
+    };
+
+
+    registerTab.onclick = () => {
+
+      loginMode = false;
+
+      registerTab.classList.add("active");
+      loginTab.classList.remove("active");
+
+      nameGroup.classList.remove("hidden");
+
+      authName.required = true;
+
+      authSubmit.textContent = "Criar conta";
+    };
+
+
+    authForm.addEventListener("submit", async event => {
+
+      event.preventDefault();
+
+      authMessage.innerHTML = "";
+
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+
+      try {
+
+        authSubmit.disabled = true;
+
+        if (loginMode) {
+
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        } else {
+
+          const name =
+            authName.value.trim() ||
+            email.split("@")[0];
+
+          const credential =
+            await createUserWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+
+          await updateProfile(
+            credential.user,
+            {
+              displayName: name
+            }
+          );
+
+          await createUserProfile(
+            credential.user,
+            name
+          );
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        authMessage.innerHTML = `
+          <div class="error">
+            ${getFirebaseError(error)}
+          </div>
+        `;
+
+      } finally {
+
+        authSubmit.disabled = false;
+      }
+
+    });
+
+
+    async function createUserProfile(user, name) {
+
+      const userRef = doc(db, "users", user.uid);
+
+      const profile = {
+
+        uid: user.uid,
+
+        name,
+
+        email: user.email,
+
+        photoURL: user.photoURL || avatarFallback(name),
+
+        bannerURL: "",
+
+        level: 1,
+
+        xp: 0,
+
+        coins: 0,
+
+        totalScore: 0,
+
+        gamesPlayed: 0,
+
+        wins: 0,
+
+        losses: 0,
+
+        friendsCount: 0,
+
+        createdAt: serverTimestamp(),
+
+        updatedAt: serverTimestamp()
+
+      };
+
+      await setDoc(userRef, profile);
+
+      currentProfile = profile;
+    }
+
+
+    function getFirebaseError(error) {
+
+      const code = error?.code || "";
+
+      const messages = {
+
+        "auth/invalid-email":
+          "E-mail inválido.",
+
+        "auth/user-not-found":
+          "Usuário não encontrado.",
+
+        "auth/wrong-password":
+          "Senha incorreta.",
+
+        "auth/invalid-credential":
+          "E-mail ou senha incorretos.",
+
+        "auth/email-already-in-use":
+          "Este e-mail já está cadastrado.",
+
+        "auth/weak-password":
+          "A senha precisa ter pelo menos 6 caracteres.",
+
+        "auth/too-many-requests":
+          "Muitas tentativas. Aguarde alguns minutos."
+
+      };
+
+      return messages[code] || "Não foi possível concluir a operação.";
+    }
+
+
+    document.getElementById("logoutBtn").onclick = async () => {
+
+      await signOut(auth);
+
+      toast("Você saiu da sua conta.");
+    };
+
+
+    onAuthStateChanged(auth, async user => {
+
+      currentUser = user;
+
+      if (!user) {
+
+        document.getElementById("authScreen")
+          .classList.remove("hidden");
+
+        document.getElementById("app")
+          .classList.add("hidden");
+
+        return;
+      }
+
+      document.getElementById("authScreen")
+        .classList.add("hidden");
+
+      document.getElementById("app")
+        .classList.remove("hidden");
+
+      await loadProfile();
+
+      renderPage("home");
+    });
+
+
+    async function loadProfile() {
+
+      if (!currentUser) return;
+
+      const refUser = doc(db, "users", currentUser.uid);
+
+      const snap = await getDoc(refUser);
+
+      if (snap.exists()) {
+
+        currentProfile = {
+          ...snap.data(),
+          uid: currentUser.uid
+        };
+
+      } else {
+
+        await createUserProfile(
+          currentUser,
+          currentUser.displayName ||
+          currentUser.email.split("@")[0]
+        );
+      }
+
+      updateTopUser();
+    }
+
+
+    function updateTopUser() {
+
+      if (!currentProfile) return;
+
+      document.getElementById("topName").textContent =
+        currentProfile.name ||
+        currentUser.displayName ||
+        "Jogador";
+
+      document.getElementById("topAvatar").src =
+        currentProfile.photoURL ||
+        avatarFallback(currentProfile.name);
+    }
+
+
+    /* ==========================================================
+       NAVEGAÇÃO
+    ========================================================== */
+
+    document.querySelectorAll(".nav button[data-page]")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          navigate(button.dataset.page);
+
+        });
+
+      });
+
+
+    document.getElementById("mobileMenu").onclick = () => {
+
+      document.getElementById("sidebar")
+        .classList.toggle("open");
+    };
+
+
+    document.getElementById("globalSearch")
+      .addEventListener("keydown", event => {
+
+        if (event.key !== "Enter") return;
+
+        const value = event.target.value.trim();
+
+        if (!value) return;
+
+        navigate("games");
+
+        setTimeout(() => {
+
+          const cards =
+            document.querySelectorAll(".game-card");
+
+          cards.forEach(card => {
+
+            card.style.display =
+              card.innerText
+                .toLowerCase()
+                .includes(value.toLowerCase())
+                  ? ""
+                  : "none";
+          });
+
+        }, 50);
+
+      });
+
+
+    /* ==========================================================
+       RENDER PÁGINAS
+    ========================================================== */
+
+    function renderPage(page) {
+
+      if (!currentUser) return;
+
+      const content = document.getElementById("content");
+
+      switch(page) {
+
+        case "home":
+          renderHome(content);
+          break;
+
+        case "games":
+          renderGames(content);
+          break;
+
+        case "ranking":
+          renderRanking(content);
+          break;
+
+        case "missions":
+          renderMissions(content);
+          break;
+
+        case "achievements":
+          renderAchievements(content);
+          break;
+
+        case "friends":
+          renderFriends(content);
+          break;
+
+        case "chat":
+          renderChat(content);
+          break;
+
+        case "notifications":
+          renderNotifications(content);
+          break;
+
+        case "profile":
+          renderProfile(content);
+          break;
+
+        case "history":
+          renderHistory(content);
+          break;
+
+        case "settings":
+          renderSettings(content);
+          break;
+
+        case "million":
+          renderMillion(content);
+          break;
+
+        case "sky":
+          renderSky(content);
+          break;
+
+        default:
+          renderHome(content);
+      }
+    }
+
+
+    /* ==========================================================
+       HOME
+    ========================================================== */
+
+    function renderHome(content) {
+
+      const p = currentProfile || {};
+
+      content.innerHTML = `
+
+        <section class="hero card">
+
+          <div>
+
+            <h1>
+              Bem-vindo ao
+              <span style="color:#8b7cf6;">Click Play</span>
+            </h1>
+
+            <p>
+              Jogue, evolua, dispute rankings,
+              conquiste recompensas e jogue
+              com seus amigos.
+            </p>
+
+            <div class="hero-buttons">
+
+              <button class="btn btn-primary"
+                onclick="navigate('games')">
+                🎮 Explorar jogos
+              </button>
+
+              <button class="btn btn-secondary"
+                onclick="navigate('ranking')">
+                🏆 Ver ranking
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section class="section">
+
+          <div class="stats">
+
+            <div class="stat card">
+              <div class="stat-label">Nível</div>
+              <div class="stat-value">
+                ${p.level || 1}
+              </div>
+            </div>
+
+            <div class="stat card">
+              <div class="stat-label">XP</div>
+              <div class="stat-value">
+                ${p.xp || 0}
+              </div>
+            </div>
+
+            <div class="stat card">
+              <div class="stat-label">Partidas</div>
+              <div class="stat-value">
+                ${p.gamesPlayed || 0}
+              </div>
+            </div>
+
+            <div class="stat card">
+              <div class="stat-label">Vitórias</div>
+              <div class="stat-value">
+                ${p.wins || 0}
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section class="section">
+
+          <div class="section-header">
+            <div>
+              <h2>Jogos em destaque</h2>
+              <span>Escolha seu próximo desafio</span>
+            </div>
+
+            <button class="btn btn-secondary"
+              onclick="navigate('games')">
+              Ver todos
+            </button>
+          </div>
+
+          <div class="games-grid">
+
+            ${gameCard(
+              "million",
+              "💰",
+              "Jogo do Milhão",
+              "Quiz competitivo com perguntas de várias categorias.",
+              ["Quiz","Competitivo","Ranking"]
+            )}
+
+            ${gameCard(
+              "sky",
+              "🪽",
+              "Sky Dash",
+              "Desvie dos obstáculos e tente bater seu recorde.",
+              ["Arcade","Solo","PvP"]
+            )}
+
+          </div>
+
+        </section>
+
+
+        <section class="section">
+
+          <div class="section-header">
+            <div>
+              <h2>Seu progresso</h2>
+              <span>Continue evoluindo</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding:20px;">
+
+            <div style="display:flex;justify-content:space-between;">
+              <strong>Nível ${p.level || 1}</strong>
+              <span style="color:#8d96ad;">
+                ${p.xp || 0} XP
+              </span>
+            </div>
+
+            <div class="xp-bar">
+              <div class="xp-fill"
+                style="width:${Math.min(((p.xp || 0) % 100),100)}%;">
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+      `;
+    }
+
+
+    function gameCard(id, icon, title, description, tags) {
+
+      return `
+
+        <article class="game-card card"
+          onclick="navigate('${id}')">
+
+          <div class="game-cover">
+            ${icon}
+          </div>
+
+          <div class="game-info">
+
+            <h3>${title}</h3>
+
+            <p>${description}</p>
+
+            <div class="tags">
+
+              ${tags.map(tag =>
+                `<span class="tag">${tag}</span>`
+              ).join("")}
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `;
+    }
+
+
+    /* ==========================================================
+       GAMES
+    ========================================================== */
+
+    function renderGames(content) {
+
+      content.innerHTML = `
+
+        <section>
+
+          <div class="section-header">
+            <div>
+              <h2>Todos os jogos</h2>
+              <span>Uma conta para toda a plataforma</span>
+            </div>
+          </div>
+
+          <div class="games-grid">
+
+            ${gameCard(
+              "million",
+              "💰",
+              "Jogo do Milhão",
+              "Teste seus conhecimentos em centenas de categorias.",
+              ["10 temas","4 alternativas","Timer"]
+            )}
+
+            ${gameCard(
+              "sky",
+              "🪽",
+              "Sky Dash",
+              "Voe o máximo possível sem bater nos obstáculos.",
+              ["Arcade","Recorde","PvP"]
+            )}
+
+          </div>
+
+        </section>
+
+
+        <section class="section">
+
+          <div class="card" style="padding:25px;">
+
+            <h2>Próximos jogos</h2>
+
+            <p style="color:#8d96ad;margin-top:8px;">
+              A arquitetura do Click Play está preparada para
+              adicionar novos jogos sem criar outro projeto Firebase.
+            </p>
+
+          </div>
+
+        </section>
+      `;
+    }
+
+
+    /* ==========================================================
+       RANKING
+    ========================================================== */
+
+    async function renderRanking(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>🏆 Ranking</h2>
+            <span>Os melhores jogadores do Click Play</span>
+          </div>
+
+        </div>
+
+        <div class="card table-wrap">
+
+          <table class="table">
+
+            <thead>
+
+              <tr>
+                <th>#</th>
+                <th>Jogador</th>
+                <th>Nível</th>
+                <th>XP</th>
+                <th>Pontuação</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="rankingBody">
+
+              <tr>
+                <td colspan="5">
+                  Carregando ranking...
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+      `;
+
+      try {
+
+        const usersQuery = query(
+          collection(db, "users"),
+          orderBy("xp", "desc"),
+          limit(50)
+        );
+
+        const snap = await getDocs(usersQuery);
+
+        const body = document.getElementById("rankingBody");
+
+        body.innerHTML = "";
+
+        let position = 1;
+
+        snap.forEach(item => {
+
+          const user = item.data();
+
+          body.innerHTML += `
+
+            <tr>
+
+              <td>
+                ${position}
+              </td>
+
+              <td>
+
+                <div class="rank-user">
+
+                  <img class="small-avatar"
+                    src="${user.photoURL || avatarFallback(user.name)}">
+
+                  <strong>
+                    ${escapeHtml(user.name || "Jogador")}
+                  </strong>
+
+                </div>
+
+              </td>
+
+              <td>${user.level || 1}</td>
+
+              <td>${user.xp || 0}</td>
+
+              <td>${user.totalScore || 0}</td>
+
+            </tr>
+          `;
+
+          position++;
+        });
+
+        if (!body.children.length) {
+
+          body.innerHTML = `
+            <tr>
+              <td colspan="5" style="color:#8d96ad;">
+                Ainda não existem jogadores suficientes.
+              </td>
+            </tr>
+          `;
+        }
+
+      } catch(error) {
+
+        console.error(error);
+
+        document.getElementById("rankingBody").innerHTML = `
+          <tr>
+            <td colspan="5">
+              O ranking será disponibilizado após
+              os primeiros jogadores começarem a jogar.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+
+    /* ==========================================================
+       MISSÕES
+    ========================================================== */
+
+    function renderMissions(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>🎯 Missões</h2>
+            <span>Complete objetivos e ganhe XP</span>
+          </div>
+
+        </div>
+
+        <div class="games-grid">
+
+          ${missionCard(
+            "🎮",
+            "Primeira partida",
+            "Jogue sua primeira partida.",
+            100
+          )}
+
+          ${missionCard(
+            "🔥",
+            "Sequência",
+            "Acerte 5 perguntas seguidas.",
+            250
+          )}
+
+          ${missionCard(
+            "🏆",
+            "Competidor",
+            "Alcance o Top 10.",
+            500
+          )}
+
+          ${missionCard(
+            "⭐",
+            "Veterano",
+            "Jogue 50 partidas.",
+            1000
+          )}
+
+        </div>
+      `;
+    }
+
+
+    function missionCard(icon,title,description,xp) {
+
+      return `
+
+        <div class="card" style="padding:20px;">
+
+          <div style="font-size:35px;">
+            ${icon}
+          </div>
+
+          <h3 style="margin-top:10px;">
+            ${title}
+          </h3>
+
+          <p style="color:#8d96ad;margin-top:7px;">
+            ${description}
+          </p>
+
+          <div style="margin-top:15px;color:#8b7cf6;font-weight:800;">
+            +${xp} XP
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    /* ==========================================================
+       ACHIEVEMENTS
+    ========================================================== */
+
+    function renderAchievements(content) {
+
+      const achievements = [
+
+        ["🌟","Primeiro passo","Faça sua primeira partida."],
+        ["🧠","Mente brilhante","Acerte 10 perguntas."],
+        ["🔥","Em chamas","Consiga uma sequência de 5 acertos."],
+        ["🏆","Campeão","Ganhe sua primeira partida."],
+        ["🚀","Veterano","Jogue 50 partidas."],
+        ["💎","Lenda","Alcance nível 20."]
+
+      ];
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>🏅 Conquistas</h2>
+            <span>Mostre o que você conseguiu</span>
+          </div>
+
+        </div>
+
+        <div class="games-grid">
+
+          ${achievements.map(a => `
+
+            <div class="card" style="padding:20px;">
+
+              <div style="font-size:40px;">
+                ${a[0]}
+              </div>
+
+              <h3 style="margin-top:10px;">
+                ${a[1]}
+              </h3>
+
+              <p style="color:#8d96ad;margin-top:7px;">
+                ${a[2]}
+              </p>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+      `;
+    }
+
+
+    /* ==========================================================
+       FRIENDS
+    ========================================================== */
+
+    async function renderFriends(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>👥 Amigos</h2>
+            <span>Encontre jogadores e jogue junto</span>
+          </div>
+
+        </div>
+
+        <div class="card" style="padding:20px;">
+
+          <h3>Adicionar amigo</h3>
+
+          <div style="display:flex;gap:10px;margin-top:12px;">
+
+            <input
+              id="friendEmail"
+              class="input"
+              placeholder="E-mail do jogador">
+
+            <button
+              class="btn btn-primary"
+              onclick="sendFriendRequest()">
+              Enviar
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="card" style="padding:20px;">
+
+            <h3>Seus amigos</h3>
+
+            <div id="friendsList"
+              style="margin-top:15px;color:#8d96ad;">
+              Carregando...
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+      loadFriends();
+    }
+
+
+    window.sendFriendRequest = async function() {
+
+      const email =
+        document.getElementById("friendEmail")
+          .value.trim()
+          .toLowerCase();
+
+      if (!email) {
+
+        toast("Digite o e-mail do jogador.");
+
+        return;
+      }
+
+      if (email === currentUser.email.toLowerCase()) {
+
+        toast("Você não pode adicionar a si mesmo.");
+
+        return;
+      }
+
+      try {
+
+        const usersQuery = query(
+          collection(db,"users"),
+          limit(100)
+        );
+
+        const snap = await getDocs(usersQuery);
+
+        let target = null;
+
+        snap.forEach(item => {
+
+          if (
+            String(item.data().email || "").toLowerCase() === email
+          ) {
+            target = {
+              id:item.id,
+              ...item.data()
+            };
+          }
+
+        });
+
+        if (!target) {
+
+          toast("Jogador não encontrado.");
+
+          return;
+        }
+
+        await addDoc(
+          collection(db,"friend_requests"),
+          {
+            from: currentUser.uid,
+            to: target.uid,
+            fromName: currentProfile.name,
+            fromEmail: currentUser.email,
+            status:"pending",
+            createdAt:serverTimestamp()
+          }
+        );
+
+        await addDoc(
+          collection(db,"notifications"),
+          {
+            userId:target.uid,
+            type:"friend_request",
+            title:"Nova solicitação de amizade",
+            message:`${currentProfile.name} quer ser seu amigo.`,
+            read:false,
+            createdAt:serverTimestamp()
+          }
+        );
+
+        toast("Solicitação enviada.");
+
+        document.getElementById("friendEmail").value = "";
+
+      } catch(error) {
+
+        console.error(error);
+
+        toast("Não foi possível enviar a solicitação.");
+      }
+    };
+
+
+    async function loadFriends() {
+
+      const element =
+        document.getElementById("friendsList");
+
+      if (!element) return;
+
+      try {
+
+        const friendsQuery = query(
+          collection(db,"friends"),
+          limit(100)
+        );
+
+        const snap = await getDocs(friendsQuery);
+
+        const friends = [];
+
+        snap.forEach(item => {
+
+          const data = item.data();
+
+          if (
+            data.user1 === currentUser.uid ||
+            data.user2 === currentUser.uid
+          ) {
+            friends.push(data);
+          }
+
+        });
+
+        if (!friends.length) {
+
+          element.innerHTML =
+            "Você ainda não adicionou amigos.";
+
+          return;
+        }
+
+        element.innerHTML = friends.map(friend => `
+
+          <div style="
+            padding:12px 0;
+            border-bottom:1px solid var(--border);
+          ">
+
+            <strong>
+              Amigo
+            </strong>
+
+          </div>
+
+        `).join("");
+
+      } catch {
+
+        element.innerHTML =
+          "Sua lista de amigos aparecerá aqui.";
+      }
+    }
+
+
+    /* ==========================================================
+       CHAT
+    ========================================================== */
+
+    function renderChat(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>💬 Chat</h2>
+            <span>Converse com seus amigos</span>
+          </div>
+
+        </div>
+
+
+        <div class="card" style="padding:20px;">
+
+          <div id="chatMessages"
+            style="
+              min-height:300px;
+              max-height:450px;
+              overflow:auto;
+              margin-bottom:15px;
+            ">
+
+            <div style="color:#8d96ad;">
+              Selecione uma conversa para começar.
+            </div>
+
+          </div>
+
+
+          <div style="display:flex;gap:10px;">
+
+            <input
+              id="chatInput"
+              class="input"
+              placeholder="Digite uma mensagem...">
+
+            <button
+              class="btn btn-primary"
+              onclick="sendChatMessage()">
+              Enviar
+            </button>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    window.sendChatMessage = async function() {
+
+      const input =
+        document.getElementById("chatInput");
+
+      const message =
+        input.value.trim();
+
+      if (!message) return;
+
+      try {
+
+        await addDoc(
+          collection(db,"private_messages"),
+          {
+            senderId:currentUser.uid,
+            senderName:currentProfile.name,
+            text:message,
+            createdAt:serverTimestamp()
+          }
+        );
+
+        input.value = "";
+
+        toast("Mensagem enviada.");
+
+      } catch(error) {
+
+        console.error(error);
+
+        toast("Não foi possível enviar.");
+      }
+    };
+
+
+    /* ==========================================================
+       NOTIFICATIONS
+    ========================================================== */
+
+    function renderNotifications(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>🔔 Notificações</h2>
+            <span>Veja o que aconteceu na sua conta</span>
+          </div>
+
+        </div>
+
+
+        <div id="notificationList"
+          class="card"
+          style="padding:20px;">
+
+          Carregando...
+
+        </div>
+      `;
+
+      loadNotifications();
+    }
+
+
+    async function loadNotifications() {
+
+      const element =
+        document.getElementById("notificationList");
+
+      if (!element) return;
+
+      try {
+
+        const notificationsQuery = query(
+          collection(db,"notifications"),
+          limit(50)
+        );
+
+        const snap =
+          await getDocs(notificationsQuery);
+
+        const list = [];
+
+        snap.forEach(item => {
+
+          const data = item.data();
+
+          if (data.userId === currentUser.uid) {
+
+            list.push(data);
+          }
+
+        });
+
+        list.sort((a,b) => {
+
+          const aa =
+            a.createdAt?.seconds || 0;
+
+          const bb =
+            b.createdAt?.seconds || 0;
+
+          return bb - aa;
+        });
+
+        if (!list.length) {
+
+          element.innerHTML =
+            `<div style="color:#8d96ad;">
+              Nenhuma notificação.
+            </div>`;
+
+          return;
+        }
+
+        element.innerHTML = list.map(item => `
+
+          <div style="
+            padding:15px 0;
+            border-bottom:1px solid var(--border);
+          ">
+
+            <strong>
+              ${escapeHtml(item.title || "Notificação")}
+            </strong>
+
+            <div style="
+              color:#8d96ad;
+              margin-top:5px;
+              font-size:13px;
+            ">
+              ${escapeHtml(item.message || "")}
+            </div>
+
+          </div>
+
+        `).join("");
+
+      } catch {
+
+        element.innerHTML =
+          "Nenhuma notificação encontrada.";
+      }
+    }
+
+
+    /* ==========================================================
+       PROFILE
+    ========================================================== */
+
+    function renderProfile(content) {
+
+      const p = currentProfile || {};
+
+      content.innerHTML = `
+
+        <div class="card">
+
+          <div
+            class="profile-cover"
+            style="
+              ${p.bannerURL
+                ? `background-image:url('${p.bannerURL}');background-size:cover;background-position:center;`
+                : ""}
+            "
+          >
+
+            <label class="btn btn-secondary profile-banner-upload">
+              Alterar banner
+              <input
+                id="bannerInput"
+                type="file"
+                accept="image/*"
+                hidden>
+            </label>
+
+          </div>
+
+
+          <div class="profile-main">
+
+            <label style="cursor:pointer;display:block;width:max-content;">
+
+              <img
+                id="profileAvatar"
+                class="profile-big-avatar"
+                src="${p.photoURL || avatarFallback(p.name)}"
+                alt="Foto do perfil">
+
+              <input
+                id="avatarInput"
+                type="file"
+                accept="image/*"
+                hidden>
+
+            </label>
+
+
+            <div class="profile-name">
+              ${escapeHtml(p.name || "Jogador")}
+            </div>
+
+            <div class="profile-email">
+              ${escapeHtml(currentUser.email || "")}
+            </div>
+
+
+            <div style="
+              display:flex;
+              gap:10px;
+              margin-top:18px;
+              flex-wrap:wrap;
+            ">
+
+              <span class="pill">
+                ⭐ Nível ${p.level || 1}
+              </span>
+
+              <span class="pill">
+                XP ${p.xp || 0}
+              </span>
+
+              <span class="pill">
+                🪙 ${p.coins || 0}
+              </span>
+
+            </div>
+
+
+            <div style="margin-top:25px;max-width:600px;">
+
+              <div style="
+                display:flex;
+                justify-content:space-between;
+              ">
+
+                <strong>Progresso</strong>
+
+                <span style="color:#8d96ad;">
+                  ${p.xp || 0} XP
+                </span>
+
+              </div>
+
+              <div class="xp-bar">
+
+                <div
+                  class="xp-fill"
+                  style="
+                    width:${Math.min(
+                      ((p.xp || 0) % 100),
+                      100
+                    )}%;
+                  ">
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="card form-card" style="margin:0;">
+
+            <h2>Editar perfil</h2>
+
+            <div style="margin-top:20px;">
+
+              <div class="form-group">
+
+                <label>Nome</label>
+
+                <input
+                  id="profileNameInput"
+                  class="input"
+                  value="${escapeHtml(p.name || "")}"
+                  maxlength="30">
+
+              </div>
+
+              <button
+                class="btn btn-primary"
+                onclick="saveProfile()">
+                Salvar alterações
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+
+      document.getElementById("avatarInput")
+        .addEventListener("change", uploadAvatar);
+
+      document.getElementById("bannerInput")
+        .addEventListener("change", uploadBanner);
+    }
+
+
+    window.saveProfile = async function() {
+
+      const name =
+        document.getElementById("profileNameInput")
+          .value.trim();
+
+      if (!name) {
+
+        toast("Digite um nome.");
+
+        return;
+      }
+
+      try {
+
+        await updateDoc(
+          doc(db,"users",currentUser.uid),
+          {
+            name,
+            updatedAt:serverTimestamp()
+          }
+        );
+
+        await updateProfile(
+          currentUser,
+          {
+            displayName:name
+          }
+        );
+
+        currentProfile.name = name;
+
+        updateTopUser();
+
+        toast("Perfil atualizado.");
+
+        renderProfile(
+          document.getElementById("content")
+        );
+
+      } catch(error) {
+
+        console.error(error);
+
+        toast("Não foi possível salvar.");
+      }
+    };
+
+
+    async function uploadAvatar(event) {
+
+      const file = event.target.files[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+
+        toast("Escolha uma imagem.");
+
+        return;
+      }
+
+      try {
+
+        toast("Enviando foto...");
+
+        const storageRef = ref(
+          storage,
+          `users/${currentUser.uid}/avatar/${Date.now()}-${file.name}`
+        );
+
+        await uploadBytes(
+          storageRef,
+          file
+        );
+
+        const url =
+          await getDownloadURL(storageRef);
+
+        await updateDoc(
+          doc(db,"users",currentUser.uid),
+          {
+            photoURL:url,
+            updatedAt:serverTimestamp()
+          }
+        );
+
+        currentProfile.photoURL = url;
+
+        updateTopUser();
+
+        toast("Foto de perfil atualizada.");
+
+        renderProfile(
+          document.getElementById("content")
+        );
+
+      } catch(error) {
+
+        console.error(error);
+
+        toast(
+          "Não foi possível enviar a foto. Verifique as regras do Storage."
+        );
+      }
+    }
+
+
+    async function uploadBanner(event) {
+
+      const file = event.target.files[0];
+
+      if (!file) return;
+
+      try {
+
+        toast("Enviando banner...");
+
+        const storageRef = ref(
+          storage,
+          `users/${currentUser.uid}/banner/${Date.now()}-${file.name}`
+        );
+
+        await uploadBytes(
+          storageRef,
+          file
+        );
+
+        const url =
+          await getDownloadURL(storageRef);
+
+        await updateDoc(
+          doc(db,"users",currentUser.uid),
+          {
+            bannerURL:url,
+            updatedAt:serverTimestamp()
+          }
+        );
+
+        currentProfile.bannerURL = url;
+
+        toast("Banner atualizado.");
+
+        renderProfile(
+          document.getElementById("content")
+        );
+
+      } catch(error) {
+
+        console.error(error);
+
+        toast("Não foi possível enviar o banner.");
+      }
+    }
+
+
+    /* ==========================================================
+       HISTORY
+    ========================================================== */
+
+    function renderHistory(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>📊 Histórico</h2>
+            <span>Veja suas partidas e evolução</span>
+          </div>
+
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat card">
+
+            <div class="stat-label">
+              Partidas
+            </div>
+
+            <div class="stat-value">
+              ${currentProfile.gamesPlayed || 0}
+            </div>
+
+          </div>
+
+
+          <div class="stat card">
+
+            <div class="stat-label">
+              Vitórias
+            </div>
+
+            <div class="stat-value">
+              ${currentProfile.wins || 0}
+            </div>
+
+          </div>
+
+
+          <div class="stat card">
+
+            <div class="stat-label">
+              Derrotas
+            </div>
+
+            <div class="stat-value">
+              ${currentProfile.losses || 0}
+            </div>
+
+          </div>
+
+
+          <div class="stat card">
+
+            <div class="stat-label">
+              Pontuação total
+            </div>
+
+            <div class="stat-value">
+              ${currentProfile.totalScore || 0}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="card" style="padding:25px;">
+
+            <h3>Histórico de partidas</h3>
+
+            <p style="color:#8d96ad;margin-top:8px;">
+              Suas partidas serão registradas automaticamente
+              conforme os jogos forem sendo disputados.
+            </p>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    /* ==========================================================
+       SETTINGS
+    ========================================================== */
+
+    function renderSettings(content) {
+
+      content.innerHTML = `
+
+        <div class="section-header">
+
+          <div>
+            <h2>⚙️ Configurações</h2>
+            <span>Controle sua conta</span>
+          </div>
+
+        </div>
+
+
+        <div class="card form-card" style="margin:0;">
+
+          <h3>Conta</h3>
+
+          <div style="margin-top:20px;">
+
+            <div class="form-group">
+
+              <label>E-mail</label>
+
+              <input
+                class="input"
+                value="${escapeHtml(currentUser.email || "")}"
+                disabled>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>UID Firebase</label>
+
+              <input
+                class="input"
+                value="${escapeHtml(currentUser.uid)}"
+                disabled>
+
+            </div>
+
+
+            <div style="
+              padding:15px;
+              border-radius:12px;
+              background:#0b0f1c;
+              color:#8d96ad;
+              font-size:13px;
+            ">
+
+              Sua conta usa autenticação Firebase.
+              O mesmo login será utilizado em todos
+              os jogos do Click Play.
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <div class="card form-card" style="margin:0;">
+
+            <h3>Segurança</h3>
+
+            <p style="
+              color:#8d96ad;
+              margin-top:8px;
+              line-height:1.5;
+            ">
+              Recursos como bloqueio, denúncias,
+              moderação e proteção contra abuso
+              serão controlados pelo sistema da plataforma.
+            </p>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    /* ==========================================================
+       JOGO DO MILHÃO
+    ========================================================== */
+
+    const defaultQuestions = [
+
+      {
+        question:"Qual é a capital do Brasil?",
+        answers:[
+          "São Paulo",
+          "Brasília",
+          "Rio de Janeiro",
+          "Belo Horizonte"
+        ],
+        correct:1,
+        category:"Geografia",
+        difficulty:1
+      },
+
+      {
+        question:"Quanto é 7 × 8?",
+        answers:[
+          "54",
+          "56",
+          "64",
+          "48"
+        ],
+        correct:1,
+        category:"Matemática",
+        difficulty:1
+      },
+
+      {
+        question:"Qual planeta é conhecido como planeta vermelho?",
+        answers:[
+          "Vênus",
+          "Júpiter",
+          "Marte",
+          "Saturno"
+        ],
+        correct:2,
+        category:"Ciência",
+        difficulty:1
+      },
+
+      {
+        question:"Qual é o maior oceano da Terra?",
+        answers:[
+          "Atlântico",
+          "Índico",
+          "Pacífico",
+          "Ártico"
+        ],
+        correct:2,
+        category:"Geografia",
+        difficulty:2
+      },
+
+      {
+        question:"Quem escreveu Dom Casmurro?",
+        answers:[
+          "Machado de Assis",
+          "José de Alencar",
+          "Carlos Drummond",
+          "Clarice Lispector"
+        ],
+        correct:0,
+        category:"Literatura",
+        difficulty:2
+      },
+
+      {
+        question:"Qual é o símbolo químico do ouro?",
+        answers:[
+          "Ag",
+          "Au",
+          "O",
+          "Fe"
+        ],
+        correct:1,
+        category:"Ciência",
+        difficulty:2
+      },
+
+      {
+        question:"Em que continente fica o Egito?",
+        answers:[
+          "Ásia",
+          "Europa",
+          "África",
+          "Oceania"
+        ],
+        correct:2,
+        category:"Geografia",
+        difficulty:1
+      },
+
+      {
+        question:"Qual destes animais é um mamífero?",
+        answers:[
+          "Tubarão",
+          "Golfinho",
+          "Crocodilo",
+          "Pinguim"
+        ],
+        correct:1,
+        category:"Biologia",
+        difficulty:2
+      },
+
+      {
+        question:"Qual é o maior planeta do Sistema Solar?",
+        answers:[
+          "Terra",
+          "Saturno",
+          "Júpiter",
+          "Netuno"
+        ],
+        correct:2,
+        category:"Ciência",
+        difficulty:3
+      },
+
+      {
+        question:"Qual país possui o maior território do mundo?",
+        answers:[
+          "China",
+          "Estados Unidos",
+          "Canadá",
+          "Rússia"
+        ],
+        correct:3,
+        category:"Geografia",
+        difficulty:3
+      },
+
+      {
+        question:"Qual é a raiz quadrada de 144?",
+        answers:[
+          "10",
+          "11",
+          "12",
+          "14"
+        ],
+        correct:2,
+        category:"Matemática",
+        difficulty:2
+      },
+
+      {
+        question:"Qual elemento possui o número atômico 1?",
+        answers:[
+          "Oxigênio",
+          "Hidrogênio",
+          "Hélio",
+          "Carbono"
+        ],
+        correct:1,
+        category:"Ciência",
+        difficulty:3
+      }
+
+    ];
+
+
+    function renderMillion(content) {
+
+      content.innerHTML = `
+
+        <div class="million">
+
+          <div class="million-top">
+
+            <button
+              class="btn btn-secondary"
+              onclick="stopMillion()">
+              ← Voltar
+            </button>
+
+            <div style="display:flex;gap:8px;">
+
+              <span id="millionScore" class="pill">
+                💰 0 pontos
+              </span>
+
+              <span id="millionLives" class="pill">
+                ❤️❤️❤️
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div id="millionArea">
+
+            <div class="card question-card">
+
+              <div style="font-size:50px;">
+                💰
+              </div>
+
+              <h2 style="margin-top:10px;">
+                Jogo do Milhão
+              </h2>
+
+              <p style="
+                color:#8d96ad;
+                margin-top:8px;
+              ">
+                Responda às perguntas,
+                acumule pontos e suba no ranking.
+              </p>
+
+
+              <div class="hero-buttons"
+                style="justify-content:center;">
+
+                <button
+                  class="btn btn-primary"
+                  onclick="startMillion()">
+                  Começar partida
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    window.startMillion = function() {
+
+      millionGame.active = true;
+      millionGame.questionIndex = 0;
+      millionGame.score = 0;
+      millionGame.lives = 3;
+      millionGame.usedQuestions = [];
+      millionGame.answered = false;
+
+      millionGame.questions =
+        shuffle([...defaultQuestions]);
+
+      showMillionQuestion();
+    };
+
+
+    function showMillionQuestion() {
+
+      if (!millionGame.active) return;
+
+      if (
+        millionGame.questionIndex >=
+        Math.min(millionGame.questions.length,10)
+      ) {
+
+        finishMillion(true);
+
+        return;
+      }
+
+      const question =
+        millionGame.questions[millionGame.questionIndex];
+
+      const shuffled =
+        shuffleAnswers(question);
+
+      question.displayAnswers = shuffled.answers;
+      question.displayCorrect = shuffled.correct;
+
+      millionGame.answered = false;
+
+      const area =
+        document.getElementById("millionArea");
+
+      area.innerHTML = `
+
+        <div class="card question-card">
+
+          <div class="question-number">
+
+            PERGUNTA
+            ${millionGame.questionIndex + 1}
+            / 10
+
+          </div>
+
+          <div class="timer">
+
+            <div
+              id="millionTimer"
+              class="timer-fill">
+            </div>
+
+          </div>
+
+          <div class="question-text">
+
+            ${escapeHtml(question.question)}
+
+          </div>
+
+          <div class="answers">
+
+            ${question.displayAnswers.map((answer,index) => `
+
+              <button
+                class="answer"
+                data-answer="${index}"
+                onclick="answerMillion(${index})">
+
+                <strong>
+                  ${String.fromCharCode(65 + index)}.
+                </strong>
+
+                ${escapeHtml(answer)}
+
+              </button>
+
+            `).join("")}
+
+          </div>
+
+
+          <div class="helps">
+
+            <button
+              class="help"
+              id="helpFifty"
+              onclick="millionFifty()">
+              50/50
+            </button>
+
+            <button
+              class="help"
+              id="helpSkip"
+              onclick="millionSkip()">
+              ⏭ Pular
+            </button>
+
+            <button
+              class="help"
+              id="helpSecond"
+              onclick="millionSecondChance()">
+              ❤️ Segunda chance
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+
+      updateMillionHeader();
+
+      startMillionTimer();
+    }
+
+
+    function shuffle(array) {
+
+      for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+      ) {
+
+        const j =
+          Math.floor(Math.random() * (i + 1));
+
+        [array[i],array[j]] =
+          [array[j],array[i]];
+      }
+
+      return array;
+    }
+
+
+    function shuffleAnswers(question) {
+
+      const original =
+        question.answers.map((answer,index) => ({
+          answer,
+          index
+        }));
+
+      shuffle(original);
+
+      return {
+
+        answers:
+          original.map(item => item.answer),
+
+        correct:
+          original.findIndex(
+            item => item.index === question.correct
+          )
+
+      };
+    }
+
+
+    window.answerMillion = function(index) {
+
+      if (millionGame.answered) return;
+
+      millionGame.answered = true;
+
+      clearInterval(millionGame.timerInterval);
+
+      const question =
+        millionGame.questions[
+          millionGame.questionIndex
+        ];
+
+      const buttons =
+        document.querySelectorAll(".answer");
+
+      buttons.forEach(button => {
+
+        button.disabled = true;
+
+        if (
+          Number(button.dataset.answer) ===
+          question.displayCorrect
+        ) {
+          button.classList.add("correct");
+        }
+
+      });
+
+
+      if (index === question.displayCorrect) {
+
+        buttons[index].classList.add("correct");
+
+        const difficulty =
+          question.difficulty || 1;
+
+        const points =
+          100 * difficulty *
+          (millionGame.questionIndex + 1);
+
+        millionGame.score += points;
+
+        addXP(20 + difficulty * 5);
+
+        toast(`Resposta correta! +${points} pontos`);
+
+        setTimeout(() => {
+
+          millionGame.questionIndex++;
+
+          showMillionQuestion();
+
+        },1000);
+
+      } else {
+
+        buttons[index].classList.add("wrong");
+
+        millionGame.lives--;
+
+        updateMillionHeader();
+
+        toast("Resposta errada!");
+
+        if (millionGame.lives <= 0) {
+
+          setTimeout(() => {
+            finishMillion(false);
+          },1000);
+
+        } else {
+
+          setTimeout(() => {
+
+            millionGame.questionIndex++;
+
+            showMillionQuestion();
+
+          },1000);
+
+        }
+
+      }
+
+    };
+
+
+    function startMillionTimer() {
+
+      clearInterval(millionGame.timerInterval);
+
+      millionGame.timer = 20;
+
+      const timer =
+        document.getElementById("millionTimer");
+
+      if (!timer) return;
+
+      timer.style.width = "100%";
+
+      millionGame.timerInterval =
+        setInterval(() => {
+
+          millionGame.timer--;
+
+          timer.style.width =
+            `${Math.max(
+              0,
+              millionGame.timer / 20 * 100
+            )}%`;
+
+          if (millionGame.timer <= 0) {
+
+            clearInterval(
+              millionGame.timerInterval
+            );
+
+            if (!millionGame.answered) {
+
+              millionGame.answered = true;
+
+              millionGame.lives--;
+
+              updateMillionHeader();
+
+              toast("Tempo esgotado!");
+
+              if (millionGame.lives <= 0) {
+
+                finishMillion(false);
+
+              } else {
+
+                setTimeout(() => {
+
+                  millionGame.questionIndex++;
+
+                  showMillionQuestion();
+
+                },800);
+
+              }
+
+            }
+
+          }
+
+        },1000);
+    }
+
+
+    function updateMillionHeader() {
+
+      const score =
+        document.getElementById("millionScore");
+
+      const lives =
+        document.getElementById("millionLives");
+
+      if (score) {
+
+        score.textContent =
+          `💰 ${millionGame.score} pontos`;
+      }
+
+      if (lives) {
+
+        lives.textContent =
+          "❤️".repeat(
+            Math.max(0,millionGame.lives)
+          ) || "💀";
+      }
+    }
+
+
+    window.millionFifty = function() {
+
+      if (!millionGame.helps.fifty) return;
+
+      const question =
+        millionGame.questions[
+          millionGame.questionIndex
+        ];
+
+      const buttons =
+        [...document.querySelectorAll(".answer")];
+
+      const wrong =
+        buttons.filter(
+          (_,index) =>
+            index !== question.displayCorrect
+        );
+
+      shuffle(wrong);
+
+      wrong.slice(0,2).forEach(button => {
+
+        button.classList.add("disabled");
+
+        button.disabled = true;
+      });
+
+      millionGame.helps.fifty = false;
+
+      const button =
+        document.getElementById("helpFifty");
+
+      if (button) button.disabled = true;
+    };
+
+
+    window.millionSkip = function() {
+
+      if (!millionGame.helps.skip) return;
+
+      millionGame.helps.skip = false;
+
+      clearInterval(millionGame.timerInterval);
+
+      millionGame.questionIndex++;
+
+      showMillionQuestion();
+    };
+
+
+    window.millionSecondChance = function() {
+
+      if (!millionGame.helps.secondChance) return;
+
+      millionGame.helps.secondChance = false;
+
+      millionGame.lives++;
+
+      updateMillionHeader();
+
+      toast("Segunda chance ativada!");
+
+      const button =
+        document.getElementById("helpSecond");
+
+      if (button) button.disabled = true;
+    };
+
+
+    async function finishMillion(completed) {
+
+      clearInterval(millionGame.timerInterval);
+
+      millionGame.active = false;
+
+      const finalScore =
+        millionGame.score;
+
+      const bonusXP =
+        completed ? 100 : 25;
+
+      await saveGameResult(
+        "Jogo do Milhão",
+        finalScore,
+        completed
+      );
+
+      await addXP(bonusXP);
+
+      const area =
+        document.getElementById("millionArea");
+
+      if (!area) return;
+
+      area.innerHTML = `
+
+        <div class="card question-card">
+
+          <div style="font-size:60px;">
+            ${completed ? "🏆" : "💔"}
+          </div>
+
+          <h2 style="margin-top:10px;">
+            ${completed
+              ? "Você completou a partida!"
+              : "Fim de jogo"}
+          </h2>
+
+          <p style="
+            color:#8d96ad;
+            margin-top:10px;
+          ">
+            Pontuação final
+          </p>
+
+          <div style="
+            font-size:40px;
+            font-weight:950;
+            margin-top:5px;
+          ">
+            ${finalScore}
+          </div>
+
+          <div class="hero-buttons"
+            style="justify-content:center;">
+
+            <button
+              class="btn btn-primary"
+              onclick="startMillion()">
+              Jogar novamente
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="navigate('games')">
+              Outros jogos
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+      updateMillionHeader();
+    }
+
+
+    window.stopMillion = function() {
+
+      clearInterval(millionGame.timerInterval);
+
+      millionGame.active = false;
+
+      navigate("games");
+    };
+
+
+    /* ==========================================================
+       XP
+    ========================================================== */
+
+    async function addXP(amount) {
+
+      if (!currentUser || !currentProfile) return;
+
+      const oldXP =
+        currentProfile.xp || 0;
+
+      const newXP =
+        oldXP + amount;
+
+      const newLevel =
+        Math.floor(newXP / 100) + 1;
+
+      try {
+
+        await updateDoc(
+          doc(db,"users",currentUser.uid),
+          {
+            xp:increment(amount),
+            level:newLevel,
+            updatedAt:serverTimestamp()
+          }
+        );
+
+        currentProfile.xp = newXP;
+        currentProfile.level = newLevel;
+
+        updateTopUser();
+
+      } catch(error) {
+
+        console.error(error);
+      }
+    }
+
+
+    async function saveGameResult(
+      game,
+      score,
+      won
+    ) {
+
+      if (!currentUser) return;
+
+      try {
+
+        await addDoc(
+          collection(db,"game_sessions"),
+          {
+            userId:currentUser.uid,
+            userName:currentProfile.name,
+            game,
+            score,
+            won,
+            createdAt:serverTimestamp()
+          }
+        );
+
+
+        await updateDoc(
+          doc(db,"users",currentUser.uid),
+          {
+            gamesPlayed:increment(1),
+
+            wins:
+              won
+                ? increment(1)
+                : increment(0),
+
+            losses:
+              won
+                ? increment(0)
+                : increment(1),
+
+            totalScore:
+              increment(score),
+
+            updatedAt:
+              serverTimestamp()
+          }
+        );
+
+
+        currentProfile.gamesPlayed =
+          (currentProfile.gamesPlayed || 0) + 1;
+
+        if (won) {
+
+          currentProfile.wins =
+            (currentProfile.wins || 0) + 1;
+
+        } else {
+
+          currentProfile.losses =
+            (currentProfile.losses || 0) + 1;
+        }
+
+        currentProfile.totalScore =
+          (currentProfile.totalScore || 0) + score;
+
+      } catch(error) {
+
+        console.error(error);
+      }
+    }
+
+
+    /* ==========================================================
+       SKY DASH
+    ========================================================== */
+
+    function renderSky(content) {
+
+      content.innerHTML = `
+
+        <div class="sky-wrap">
+
+          <div class="million-top">
+
+            <button
+              class="btn btn-secondary"
+              onclick="stopSky()">
+              ← Voltar
+            </button>
+
+            <div style="display:flex;gap:8px;">
+
+              <span class="pill">
+                🏆 Recorde:
+                <span id="skyBest">
+                  ${currentProfile.skyBest || 0}
+                </span>
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="card" style="padding:12px;">
+
+            <div id="skyBoard" class="sky-board">
+
+              <div id="skyScore"
+                class="sky-score">
+                0
+              </div>
+
+              <div id="skyBird"
+                class="bird">
+              </div>
+
+              <div id="skyPipes"></div>
+
+              <div id="skyMessage"
+                class="sky-message">
+
+                <div>
+
+                  <div style="font-size:50px;">
+                    🪽
+                  </div>
+
+                  <h2>
+                    Sky Dash
+                  </h2>
+
+                  <p style="
+                    color:#8d96ad;
+                    margin-top:7px;
+                  ">
+                    Clique, toque ou pressione espaço
+                    para voar.
+                  </p>
+
+                  <button
+                    class="btn btn-primary"
+                    style="margin-top:15px;"
+                    onclick="startSky()">
+                    Começar
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+
+      const board =
+        document.getElementById("skyBoard");
+
+      board.addEventListener(
+        "pointerdown",
+        skyJump
+      );
+
+
+      document.onkeydown = event => {
+
+        if (
+          event.code === "Space" ||
+          event.code === "ArrowUp"
+        ) {
+
+          event.preventDefault();
+
+          skyJump();
+        }
+
+      };
+    }
+
+
+    window.startSky = function() {
+
+      cancelAnimationFrame(
+        skyGame.frame
+      );
+
+      skyGame.active = true;
+      skyGame.score = 0;
+      skyGame.birdY = 200;
+      skyGame.velocity = 0;
+      skyGame.pipes = [];
+      skyGame.started = true;
+      skyGame.gameOver = false;
+
+      document.getElementById("skyMessage")
+        .innerHTML = "";
+
+      document.getElementById("skyPipes")
+        .innerHTML = "";
+
+      createSkyPipe(500);
+
+      skyLoop();
+    };
+
+
+    function skyJump() {
+
+      if (!skyGame.active) {
+
+        if (!skyGame.started) {
+
+          startSky();
+
+        }
+
+        return;
+      }
+
+      skyGame.velocity =
+        skyGame.jump;
+    }
+
+
+    function createSkyPipe(x) {
+
+      const board =
+        document.getElementById("skyBoard");
+
+      if (!board) return;
+
+      const gap = 145;
+
+      const minTop = 45;
+
+      const maxTop =
+        board.clientHeight - gap - 90;
+
+      const top =
+        minTop +
+        Math.random() *
+        Math.max(1,maxTop-minTop);
+
+      const pipe = {
+
+        x,
+
+        top,
+
+        gap,
+
+        passed:false
+
+      };
+
+      skyGame.pipes.push(pipe);
+
+      const container =
+        document.getElementById("skyPipes");
+
+      const topEl =
+        document.createElement("div");
+
+      topEl.className = "pipe";
+
+      topEl.dataset.pipe = x;
+
+      topEl.style.left = `${x}px`;
+
+      topEl.style.top = "0";
+
+      topEl.style.height = `${top}px`;
+
+      const bottomEl =
+        document.createElement("div");
+
+      bottomEl.className = "pipe";
+
+      bottomEl.dataset.pipe = x;
+
+      bottomEl.style.left = `${x}px`;
+
+      bottomEl.style.bottom = "0";
+
+      bottomEl.style.height =
+        `${board.clientHeight - top - gap}px`;
+
+      container.appendChild(topEl);
+      container.appendChild(bottomEl);
+    }
+
+
+    function skyLoop() {
+
+      if (!skyGame.active) return;
+
+      const board =
+        document.getElementById("skyBoard");
+
+      const bird =
+        document.getElementById("skyBird");
+
+      const pipesContainer =
+        document.getElementById("skyPipes");
+
+      if (!board || !bird) return;
+
+      skyGame.velocity +=
+        skyGame.gravity;
+
+      skyGame.birdY +=
+        skyGame.velocity;
+
+      bird.style.top =
+        `${skyGame.birdY}px`;
+
+
+      skyGame.pipes.forEach(pipe => {
+
+        pipe.x -= 2.7;
+
+        const elements =
+          [...pipesContainer.children]
+            .filter(
+              element =>
+                Number(element.dataset.pipe) ===
+                pipe.x + 2.7
+            );
+
+        elements.forEach(element => {
+
+          element.style.left =
+            `${pipe.x}px`;
+
+        });
+
+
+        if (
+          !pipe.passed &&
+          pipe.x + 65 < 110
+        ) {
+
+          pipe.passed = true;
+
+          skyGame.score++;
+
+          document.getElementById("skyScore")
+            .textContent =
+            skyGame.score;
+        }
+
+      });
+
+
+      if (
+        skyGame.pipes.length === 0 ||
+        skyGame.pipes[
+          skyGame.pipes.length - 1
+        ].x < board.clientWidth - 220
+      ) {
+
+        createSkyPipe(
+          board.clientWidth + 30
+        );
+      }
+
+
+      while (
+        skyGame.pipes.length &&
+        skyGame.pipes[0].x < -100
+      ) {
+
+        skyGame.pipes.shift();
+
+        if (pipesContainer.children.length >= 2) {
+
+          pipesContainer.removeChild(
+            pipesContainer.children[0]
+          );
+
+          pipesContainer.removeChild(
+            pipesContainer.children[0]
+          );
+        }
+      }
+
+
+      const birdX = 110;
+      const birdW = 34;
+      const birdH = 28;
+
+      const collision =
+        skyGame.pipes.some(pipe => {
+
+          const horizontal =
+            birdX + birdW > pipe.x &&
+            birdX < pipe.x + 65;
+
+          if (!horizontal) return false;
+
+          const insideGap =
+            skyGame.birdY > pipe.top &&
+            skyGame.birdY + birdH <
+              pipe.top + pipe.gap;
+
+          return !insideGap;
+        });
+
+
+      if (
+        collision ||
+        skyGame.birdY < 0 ||
+        skyGame.birdY >
+          board.clientHeight - birdH
+      ) {
+
+        endSky();
+
+        return;
+      }
+
+
+      skyGame.frame =
+        requestAnimationFrame(skyLoop);
+    }
+
+
+    async function endSky() {
+
+      if (!skyGame.active) return;
+
+      skyGame.active = false;
+
+      cancelAnimationFrame(
+        skyGame.frame
+      );
+
+      const score =
+        skyGame.score;
+
+      const oldBest =
+        currentProfile.skyBest || 0;
+
+      const newBest =
+        Math.max(oldBest,score);
+
+      if (newBest > oldBest) {
+
+        currentProfile.skyBest = newBest;
+
+        try {
+
+          await updateDoc(
+            doc(db,"users",currentUser.uid),
+            {
+              skyBest:newBest,
+              updatedAt:serverTimestamp()
+            }
+          );
+
+        } catch(error) {
+
+          console.error(error);
+        }
+      }
+
+      await saveGameResult(
+        "Sky Dash",
+        score,
+        score > 0
+      );
+
+      await addXP(
+        10 + score * 2
+      );
+
+
+      const message =
+        document.getElementById("skyMessage");
+
+      if (!message) return;
+
+      message.innerHTML = `
+
+        <div>
+
+          <div style="font-size:50px;">
+            ${score > 10 ? "🏆" : "💥"}
+          </div>
+
+          <h2>
+            Fim de jogo
+          </h2>
+
+          <p style="
+            color:#8d96ad;
+            margin-top:7px;
+          ">
+            Pontuação:
+            <strong style="color:white;">
+              ${score}
+            </strong>
+          </p>
+
+          <p style="
+            color:#8d96ad;
+            margin-top:5px;
+          ">
+            Recorde:
+            <strong style="color:white;">
+              ${newBest}
+            </strong>
+          </p>
+
+          <button
+            class="btn btn-primary"
+            style="margin-top:15px;"
+            onclick="startSky()">
+            Jogar novamente
+          </button>
+
+        </div>
+      `;
+    }
+
+
+    window.stopSky = function() {
+
+      skyGame.active = false;
+
+      cancelAnimationFrame(
+        skyGame.frame
+      );
+
+      document.onkeydown = null;
+
+      navigate("games");
+    };
+
+
+    /* ==========================================================
+       INICIALIZAÇÃO
+    ========================================================== */
+
+    window.addEventListener("beforeunload", () => {
+
+      clearInterval(
+        millionGame.timerInterval
+      );
+
+      cancelAnimationFrame(
+        skyGame.frame
+      );
+    });
+
+  </script>
+
+</body>
+</html>
